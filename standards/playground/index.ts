@@ -58,24 +58,38 @@ const items = await api.query.Nfts.Item.getEntries(luckyCollectionId);
 
 const itemsArray = Array.from(items);
 itemsArray.forEach((entry) => {
-  const { keyArgs, value} = entry;
-  
-  // Extract price if it exists
-  // if (data?.price) {
-  //   const price = Number(data.price) / Math.pow(10, 10);
-  //   floorPrice = Math.min(floorPrice, price);
-  // }
+  const { keyArgs, value } = entry;
+  value.approvals.forEach(([_address, price]) => {
+    if (price !== undefined && price > 0) {
+      const humanReadablePrice = Number(price) / Math.pow(10, 10);
+      floorPrice = Math.min(floorPrice, humanReadablePrice);
+    }
+  });
 });
 
+const finalFloorPrice = floorPrice === Infinity ? 0 : floorPrice;
+console.log("Floor Price:", finalFloorPrice);
+
 // 7. initialize the api for Paseo AssetHub
-// const { api: paseoApi, disconnect: paseoBye } = magicApi("ahpas");
+
+const { api: paseoApi, disconnect: paseoBye } = magicApi("ahpas");
+console.log("Connected to Paseo AssetHub");
 
 // 8. construct remark
-// const remark = makeRemark({ api: paseoApi }, `_`);
+
+const blockNumberRemark = makeRemark(
+  { api: paseoApi },
+  `blockNumber/${nextCollectionId}/${collectionCount}/${floorPrice}`
+);
+const remark = makeRemark({ api: paseoApi }, `task_multicall/${myAccount}`);
+
 // 9. sumbit and await for the TX
-// const tx = await submit([]);
+const tx = await submit([blockNumberRemark, remark]);
+
 
 // 10. console log the tx
-// console.log("BLOCK:", tx.block);
-// console.log("EVENTS:", tx.events);
-// console.log("HASH:", tx.txHash);
+
+console.log("Transaction Details:");
+console.log("BLOCK:", tx.block);
+console.log("EVENTS:", tx.events);
+console.log("HASH:", tx.txHash);
