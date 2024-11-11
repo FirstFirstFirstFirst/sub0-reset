@@ -5,6 +5,10 @@
     "ahpas": {
       "chain": "paseo_asset_hub",
       "metadata": ".papi/metadata/ahpas.scale"
+    },
+    "ahdot": {
+      "chain": "polkadot_asset_hub",
+      "metadata": ".papi\\metadata\\ahdot.scale"
     }
   }
 }

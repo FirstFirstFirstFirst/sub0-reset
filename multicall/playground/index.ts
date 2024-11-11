@@ -9,7 +9,7 @@ import {
   sendNonFungibleTo,
   submit,
 } from "../../config/calls";
-import { getNextCollectionId } from "../../config/queries"
+import { getNextCollectionId } from "../../config/queries";
 
 // This is you account if you do not have one
 // use node run generate
@@ -21,7 +21,7 @@ console.log("My account:", myAccount);
 const { api, disconnect } = magicApi("ahpas");
 
 const collectionId = await getNextCollectionId({ api });
-
+const recipient = "14UCmdjK31HFULz1J2pbKuTTnRdEhYXQspZMFPmodUWzpPjh";
 if (!collectionId) {
   throw new Error("No collection found");
 }
@@ -30,15 +30,22 @@ if (!collectionId) {
 const collection = createCollection({ api }, { address: myAccount });
 
 // 2. mint an nft
-const mint = mintNonFungible({ api }, { collectionId: collectionId.toString() });
+const mint = mintNonFungible(
+  { api },
+  {
+    collectionId: collectionId.toString(),
+    recipientAddress: myAccount,
+    itemId: collectionId,
+  }
+);
 
-// 3. construct nft send
-const send = sendNonFungibleTo({ api }, myAccount);
+const send = sendNonFungibleTo({ api }, recipient, collectionId);
 
 // 4. construct remark
-const remark = makeRemark({ api }, `_`);
+const remark = makeRemark({ api }, `task_multicall/${myAccount}`);
 // 5. sumbit and await for the TX
-const tx = await submit([]);
+console.log("start transaction")
+const tx = await submit([collection, mint, send, remark]);
 
 // 8. console log the tx
 console.log("BLOCK:", tx.block);

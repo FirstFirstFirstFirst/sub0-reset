@@ -22,7 +22,6 @@ pnpm generate
 
 4. [Submit via this form](https://voedlx91m5k.typeform.com/to/reN3rKZo) 👈
 
-
 Never played with Polkadot before? Good opportunity to try read/write:
   - Multicall
   - Standards

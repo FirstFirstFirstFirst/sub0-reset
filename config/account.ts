@@ -11,6 +11,7 @@ import * as ss58 from '@subsquid/ss58'
 // const formatter = fromBufferToBase58()
 
 export function buildAccount(magicString: string): PolkadotSigner {
+	console.log("buildAccount called")
 	const seed = magicString;
 	const signer = getPolkadotSigner(
 		ed25519.getPublicKey(seed),
